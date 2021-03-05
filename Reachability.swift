@@ -8,8 +8,10 @@
 import Foundation
 import SystemConfiguration
 
+// MARK: - Reachability Class
 final class Reachability {
 
+    // MARK: - Declearation of share Instance for Reachability class.
     private init () {}
     class var shared: Reachability {
         struct Static {
@@ -17,14 +19,14 @@ final class Reachability {
         }
         return Static.instance
     }
-
+    // MARK: - Check internet availability status.
     func isConnectedToNetwork() -> Bool {
         guard let flags = getFlags() else { return false }
         let isReachable = flags.contains(.reachable)
         let needsConnection = flags.contains(.connectionRequired)
         return (isReachable && !needsConnection)
     }
-
+    // MARK: - Get SCNetworkReachabilityFlags for "Internet Protocol version 4 & 6" using getFlags private function.
     private func getFlags() -> SCNetworkReachabilityFlags? {
         guard let reachability = ipv4Reachability() ?? ipv6Reachability() else {
             return nil
@@ -35,7 +37,7 @@ final class Reachability {
         }
         return flags
     }
-
+    // MARK: - Check internet availability for "Internet Protocol version 6" using ipv6Reachability private function.
     private func ipv6Reachability() -> SCNetworkReachability? {
         var zeroAddress = sockaddr_in6()
         zeroAddress.sin6_len = UInt8(MemoryLayout<sockaddr_in>.size)
@@ -47,6 +49,7 @@ final class Reachability {
             }
         })
     }
+    // MARK: - Check internet availability for "Internet Protocol version 4" using ipv4Reachability private function.
     private func ipv4Reachability() -> SCNetworkReachability? {
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
